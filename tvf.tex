@@ -129,7 +129,7 @@ The following is a simple geometric fact characterising the $\*t$ in terms of it
 \begin{proof}
   Let $\hat{\*y}$ be the total variation filter solution and $\hat{\*s}$ its partial sums vector.
   We will be done if we prove that $\hat{\*s}$ satisfies conditions 1 and 2 of Lemma~\ref{variation}.
-  Assume that $\hat{s}_i > (\hat{s}_{i-1} + \hat{s}_{i + 1})/2$. Note that $(\hat{s}_{i-1} + \hat{s}_{i + 1})/2 = \hat{s}_{i-1} + (\hat{y}_i + \hat{y}_{i+1})/2$ therefore we derive $\hat{y}_{i+1} < \hat{y}_i$ and, by Lemma~\ref{bounding}, $\hat{s}_{i} = s_i - \lambda/2$. Symmetric argument prove that $\hat{s}_i > (\hat{s}_{i-1} + \hat{s}_{i + 1})/2$ implies $\hat{s}_{i} = s_i + \lambda/2$
+  Assume that $\hat{s}_i > (\hat{s}_{i-1} + \hat{s}_{i + 1})/2$. Note that $(\hat{s}_{i-1} + \hat{s}_{i + 1})/2 = \hat{s}_{i-1} + (\hat{y}_i + \hat{y}_{i+1})/2$ therefore we derive $\hat{y}_{i+1} < \hat{y}_i$ and, by Lemma~\ref{bounding}, $\hat{s}_{i} = s_i - \lambda/2$. Symmetric argument prove that $\hat{s}_i < (\hat{s}_{i-1} + \hat{s}_{i + 1})/2$ implies $\hat{s}_{i} = s_i + \lambda/2$
 \end{proof}
   
 \end{document}
