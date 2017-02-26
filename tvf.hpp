@@ -9,6 +9,21 @@
 namespace tvf
 {
 
+/**
+ * Calculate total variation denoised (filtered) values of
+ * the input range [@p first, @last) with TV penalty lambda.
+ * Write output values in @output.
+ */
+template<typename FwdIt, typename OutIt>
+OutIt total_variation_filter (
+  FwdIt first,   FwdIt last,
+  double lambda, OutIt output);
+
+/*************************************************
+ *
+ * Inlined implementation
+ *
+ *************************************************/  
 namespace detail
 {
   
@@ -52,6 +67,9 @@ void convex_chain_extend (Q &chain, Point p, const Dot &dot)
   chain.push_back (p);
 }
 
+/*
+ * Symmetric
+ */
 template<typename InputIt, typename Dot>
 InputIt
 convex_chain_reduce (Point &p,
@@ -59,21 +77,13 @@ convex_chain_reduce (Point &p,
 		     const InputIt &chain_end,
 		     const Dot &dot)
 {
-  Point v {0., 0.};
-  for (; chain_begin != chain_end; ++chain_begin)
+  while (chain_begin != chain_end &&
+	 dot (p, *chain_begin) < 0)
   {
-    auto next_v = v;
-    next_v += *chain_begin;
-
-    if (dot (p, next_v) > 0)
-    {
-      break;
-    }
-
-    v = next_v;
+    p -= *chain_begin;
+    ++chain_begin;
   }
 
-  p -= v;
   return chain_begin;
 }
 
@@ -92,7 +102,7 @@ OutIt total_variation_filter (InputIt first,
    */
   std::deque<Point> upper;
   std::deque<Point> lower;
-
+  
   /*
    * Handle input of length <= 1 separately
    */
@@ -100,8 +110,7 @@ OutIt total_variation_filter (InputIt first,
   {
     return output;
   }
-
-  if (std::distance (first, last) == 1)
+  if (first + 1 == last)
   {
     *output++ = *first;
     return output;
@@ -112,7 +121,7 @@ OutIt total_variation_filter (InputIt first,
     upper.push_back ({v + lambda/2, 1});
     lower.push_back ({v - lambda/2, 1});
   }
-
+  
   /*
    * Logic to update upper/lower geodesics
    */
@@ -146,7 +155,7 @@ OutIt total_variation_filter (InputIt first,
     const Point p {is_last ? (value - lambda / 2) : value, 1};
 
     update (upper, lower, p, inner_product);
-
+    
     if (is_last)
     {
       for (const auto &p : upper)
@@ -154,7 +163,7 @@ OutIt total_variation_filter (InputIt first,
 	output = std::fill_n (output, p.y, p.x / p.y);
       }
 
-      return output;
+      break;
     }
     else
     {
