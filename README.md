@@ -3,7 +3,7 @@ Total variation denoising
 
 Solver for standard 1-D total variation denoising problem:
 
-<img src="doc/TVD1.png" width="50">
+<img src="doc/TVD1.png">
 
 The algorithm is exact up to floating point rounding error and run in
 worst-case linear time in the input size. 
