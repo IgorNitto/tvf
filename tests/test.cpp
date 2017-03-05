@@ -114,7 +114,7 @@ int main (int, char**)
 
   std::vector<double> output;
      
-  tvf::total_variation_filter (
+  tvf::total_variation_denoise (
     input.begin (),
     input.end (),
     0.5,

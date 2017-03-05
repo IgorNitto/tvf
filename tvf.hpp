@@ -10,12 +10,22 @@ namespace tvf
 {
 
 /**
- * Calculate total variation denoised (filtered) values of
- * the input range [@p first, @last) with TV penalty lambda.
- * Write output values in @output.
+ * Given an input vector X of real numbers, the total variation
+ * denoising of X is the vector Y minimising the function:
+ *
+ * \[ 1/2 * \| X - Y \|_2 + \lambda * \sum |Y_{i+1} - Y_{i}| \]
+ *
+ * This function calculates the total variation denoising of the
+ * the input vector contained in the range [@p first, @last).
+ * The values of the solution are written to the output iterator
+ * @p output as values of type double. The function returns
+ * an output iterator pointing to the end of the output range.
+ *
+ * Note: if any of the values [@p first, @p last) is NaN the
+ * behaviour of the function is undefined.
  */
 template<typename FwdIt, typename OutIt>
-OutIt total_variation_filter (
+OutIt total_variation_denoise (
   FwdIt first,   FwdIt last,
   double lambda, OutIt output);
 
@@ -90,10 +100,10 @@ convex_chain_reduce (Point &p,
 } // namespace detail {
 
 template<typename InputIt, typename OutIt>
-OutIt total_variation_filter (InputIt first,
-			      InputIt last,
-			      const double lambda,
-			      OutIt output)
+OutIt total_variation_denoise (InputIt first,
+			       InputIt last,
+			       const double lambda,
+			       OutIt output)
 {
   using namespace detail;
 
@@ -118,8 +128,8 @@ OutIt total_variation_filter (InputIt first,
   else
   {
     const auto v = *first++;
-    upper.push_back ({v + lambda/2, 1});
-    lower.push_back ({v - lambda/2, 1});
+    upper.push_back ({v + lambda, 1});
+    lower.push_back ({v - lambda, 1});
   }
   
   /*
@@ -152,7 +162,7 @@ OutIt total_variation_filter (InputIt first,
     const auto value = *first++;
     const bool is_last = (first == last);
 
-    const Point p {is_last ? (value - lambda / 2) : value, 1};
+    const Point p {is_last ? (value - lambda) : value, 1};
 
     update (upper, lower, p, inner_product);
     
