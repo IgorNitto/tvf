@@ -11,4 +11,4 @@ $(BUILD_PATH)/test : build
 build :
 	mkdir $(BUILD_PATH);
 
-.PHONY: tests build
+.PHONY: tests
